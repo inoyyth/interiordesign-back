@@ -35,6 +35,69 @@ function update_post_views( $value, $post, $key ) {
     return true;
 }
 
+
+//Register Post Featured Image
+add_action( 'rest_api_init', 'register_post_featured_image_fields' );
+function register_post_featured_image_fields() {
+    register_rest_field( 'post',
+        'featured_image',
+        [
+            'get_callback'    => function($object, $field_name, $request){
+                if($request->get_param('featured_image_size')){
+                    $requestSize = $request->get_param('featured_image_size');
+                }
+                if( $object['featured_media'] ){
+                    $img_meta = wp_get_attachment_metadata( $object['featured_media'] );
+                    if(isset($requestSize) && !empty($img_meta['sizes'][$requestSize])){
+                        $size = $requestSize;
+                    }else{
+                        $size = 'medium';
+                    }
+                    $img = wp_get_attachment_image_src($object['featured_media'], $size);
+                    return [
+                        'url' => $img[0],
+                        'title' => $img_meta['image_meta']['title'],
+                        'width' => $img_meta['sizes'][$size]['width'],
+                        'height' => $img_meta['sizes'][$size]['height']
+                    ];
+                }
+                return false;
+            }
+        ]
+    );
+}
+
+//Register Page Featured Image
+add_action( 'rest_api_init', 'register_page_featured_image_fields' );
+function register_page_featured_image_fields() {
+    register_rest_field( 'page',
+        'featured_image',
+        [
+            'get_callback'    => function($object, $field_name, $request){
+                if($request->get_param('featured_image_size')){
+                    $requestSize = $request->get_param('featured_image_size');
+                }
+                if( $object['featured_media'] ){
+                    $img_meta = wp_get_attachment_metadata( $object['featured_media'] );
+                    if(isset($requestSize) && !empty($img_meta['sizes'][$requestSize])){
+                        $size = $requestSize;
+                    }else{
+                        $size = 'medium';
+                    }
+                    $img = wp_get_attachment_image_src($object['featured_media'], $size);
+                    return [
+                        'url' => $img[0],
+                        'title' => $img_meta['image_meta']['title'],
+                        'width' => $img_meta['sizes'][$size]['width'],
+                        'height' => $img_meta['sizes'][$size]['height']
+                    ];
+                }
+                return false;
+            }
+        ]
+    );
+}
+
 // Enable the option show in rest
 add_filter( 'acf/rest_api/field_settings/show_in_rest', '__return_true' );
 
