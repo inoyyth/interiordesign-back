@@ -16,12 +16,11 @@ function register_post_fields() {
 //Get post views
 function get_post_views($post_obj) {
     $post_id = $post_obj['id'];
-    return get_post_meta($post_id, 'post_views', true);
+    return get_post_meta($post_id, 'views', true);
 }
 
 // Update post views
 function update_post_views( $value, $post, $key ) {
-    var_dump($post);die;
     $post_id = update_post_meta( $post->ID, $key, $value );
 
     if ( false === $post_id ) {
