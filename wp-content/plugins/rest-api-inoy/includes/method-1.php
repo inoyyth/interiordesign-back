@@ -1,6 +1,8 @@
 <?php
-add_action( 'rest_api_init', 'register_post_fields' );
 
+add_filter( 'rest_allow_anonymous_comments', '__return_true' );
+
+add_action( 'rest_api_init', 'register_post_fields' );
 // Register post fields.
 function register_post_fields() {
     register_rest_field('post', 'post_views', array(
@@ -81,7 +83,7 @@ function register_page_featured_image_fields() {
                     if(isset($requestSize) && !empty($img_meta['sizes'][$requestSize])){
                         $size = $requestSize;
                     }else{
-                        $size = 'medium';
+                        $size = 'large';
                     }
                     $img = wp_get_attachment_image_src($object['featured_media'], $size);
                     return [
