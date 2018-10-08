@@ -30,5 +30,6 @@ class Rest_Api_Inoy {
         include_once REST_API_INOY_PLUGIN_DIR . '/includes/method-1.php';
         include_once REST_API_INOY_PLUGIN_DIR . '/includes/menus-api.php';
         include_once REST_API_INOY_PLUGIN_DIR . '/includes/posts-api.php';
+        include_once REST_API_INOY_PLUGIN_DIR . '/includes/inquiry-api.php';
     }
 }
