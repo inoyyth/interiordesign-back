@@ -52,7 +52,7 @@ function register_post_featured_image_fields() {
                     if(isset($requestSize) && !empty($img_meta['sizes'][$requestSize])){
                         $size = $requestSize;
                     }else{
-                        $size = 'medium';
+                        $size = 'original';
                     }
                     $img = wp_get_attachment_image_src($object['featured_media'], $size);
                     return [
@@ -83,7 +83,7 @@ function register_page_featured_image_fields() {
                     if(isset($requestSize) && !empty($img_meta['sizes'][$requestSize])){
                         $size = $requestSize;
                     }else{
-                        $size = 'medium';
+                        $size = 'original';
                     }
                     $img = wp_get_attachment_image_src($object['featured_media'], $size);
                     return [
