@@ -26,10 +26,11 @@ class Rest_Api_Inoy {
     }
     // Includes
     public function includes() {
-        $version = $this->version;
-        include_once REST_API_INOY_PLUGIN_DIR . '/includes/method-1.php';
+        // $version = $this->version;?        include_once REST_API_INOY_PLUGIN_DIR . '/includes/rest-api-field.php';
+        include_once REST_API_INOY_PLUGIN_DIR . '/includes/rest-api-post.php';
+        include_once REST_API_INOY_PLUGIN_DIR . '/includes/rest-api-field.php';
+        include_once REST_API_INOY_PLUGIN_DIR . '/includes/rest-api-method.php';
         include_once REST_API_INOY_PLUGIN_DIR . '/includes/menus-api.php';
-        include_once REST_API_INOY_PLUGIN_DIR . '/includes/posts-api.php';
         include_once REST_API_INOY_PLUGIN_DIR . '/includes/inquiry-api.php';
     }
 }
