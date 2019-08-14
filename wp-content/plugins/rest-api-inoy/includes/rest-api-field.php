@@ -120,6 +120,33 @@ function register_testimonial_featured_image_fields() {
     );
 }
 
+//Register Testimonial Featured Image
+add_action( 'rest_api_init', 'register_project_featured_image_fields' );
+function register_project_featured_image_fields() {
+    register_rest_field( 'projects',
+        'featured_image',
+        [
+            'get_callback'    => function($object, $field_name, $request){
+                if($request->get_param('featured_image_size')){
+                    $requestSize = $request->get_param('featured_image_size');
+                }
+                if( $object['featured_media'] ){
+                    $img_meta = wp_get_attachment_metadata( $object['featured_media'] );
+                    if(isset($requestSize) && !empty($img_meta['sizes'][$requestSize])){
+                        $size = $requestSize;
+                    }else{
+                        $size = 'original';
+                    }
+                    $img = wp_get_attachment_image_src($object['featured_media'], $size);
+                    return [
+                        'url' => $img[0]
+                    ];
+                }
+                return false;
+            }
+        ]
+    );
+}
 // // Enable the option show in rest
 // add_filter( 'acf/rest_api/field_settings/show_in_rest', '__return_true' );
 

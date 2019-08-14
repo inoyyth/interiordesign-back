@@ -109,6 +109,7 @@ function getPostPopular(WP_REST_Request $request)  {
         $rest_lenght = $footer_popular_length - count($get_post);
         unset($args['meta_key']);
         unset($args['orderby']);
+        $args['posts_per_page']  = $rest_lenght;
         $args['orderby'] = 'date';
         $get_rest_post = get_posts($args);
     }
