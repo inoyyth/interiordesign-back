@@ -4,7 +4,7 @@ add_filter( 'wp_insert_post_data', 'wpse_40574_populate_excerpt', 99, 2 );
 function wpse_40574_populate_excerpt( $data, $postarr ) {   
     global $wpse_40574_custom_excerpt_length;
     // check if it's a valid call
-    if ( !in_array( $data['post_status'], array( 'draft', 'pending', 'auto-draft' ) ) && in_array($data['post_type'], array('post','projects'))  ) 
+    if ( !in_array( $data['post_status'], array( 'draft', 'pending', 'auto-draft' ) ) && in_array($data['post_type'], array('post','projects','page'))  ) 
     {
         // if the except is empty, call the excerpt creation function
         if ( strlen($data['post_excerpt']) == 0 ) 
@@ -38,3 +38,6 @@ function wpse_40574_create_excerpt( $content, $length = 20 ) {
 
     return $result;
 }
+
+// Adding excerpt for page
+add_post_type_support( 'page', 'excerpt' );
