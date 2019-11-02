@@ -8,9 +8,13 @@ function save_inquiry($request_data) {
     $data = array(
         'name' => $param['name'],
         'email' => $param['email'],
-        'message' => $param['message'],
         'phone' => $param['phone'],
-        'date' => date('Y-m-d H:i:s')
+        'type_works' => $param['type_works'],
+        'starting_project' => $param['starting_project'],
+        'budget' => $param['budget'],
+        'location' => $param['location'],
+        'contact_via' => $param['contact_via'],
+        'datetime' => date('Y-m-d H:i:s')
     );
 
     $insert = $wpdb->insert($table, $data);
