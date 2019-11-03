@@ -55,7 +55,7 @@ function getBigBanner(WP_REST_Request $request)  {
     $slug =  isset($params['slug']) ?  $params['slug'] : 'homepage';
     $term = get_term_by('slug', $slug, 'bigbanner');
     $banner_meta = get_term_meta( $term->term_id, 'banner', true);
-    $banner = $banner_meta ? esc_url( wp_get_attachment_url($banner_meta, 'laerge', false, false)) : '';
+    $banner = $banner_meta ? esc_url( wp_get_attachment_url($banner_meta, 'large', false, false)) : '';
     $data = [
         'id' => $term->term_id,
         'name' => $term->name,
@@ -129,20 +129,31 @@ function getPostPopular(WP_REST_Request $request)  {
 
 function saveEmailSubscription(WP_REST_Request $request)  {
     global $wpdb;
-    $table = $wpdb->prefix . 'email_subscription';
+    $table = $wpdb->prefix . 'email_queue';
     
     $param = $request->get_params();
     $result = array();
-
-    $data = array(
-        'email' => $param['email'],
-        'datetime' => $param['date']
-    );
-    $insert = $wpdb->insert($table, $data);
-    if ($insert) {
+  
+    $exists_email = $wpdb->get_row( "SELECT * FROM {$wpdb->prefix}email_queue WHERE email='".$param['email']."'", OBJECT );
+    // var_dump($exists_email->id);die;
+    if ($exists_email->id) {
         $result = array('status' => 200);
     } else {
-        $result = array('status' => 500);
+        $data = array(
+            'email' => $param['email'],
+            // 'cc' => '',
+            // 'bcc' => '',
+            'message' => '',
+            'status' => 'pending',
+            'date' => $param['date'],
+            // 'headers' => ''
+        );
+        $insert = $wpdb->insert($table, $data);
+        if ($insert) {
+            $result = array('status' => 200);
+        } else {
+            $result = array('status' => 500);
+        }
     }
 
     return json_encode($result);

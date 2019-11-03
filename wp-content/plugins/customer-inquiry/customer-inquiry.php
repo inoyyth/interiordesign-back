@@ -33,18 +33,9 @@ class CustomerInquiry
     {
         // Admin page calls:
         add_action( 'admin_menu', array( $this, 'addAdminMenu' ) );
-        // add_action( 'wp_ajax_store_admin_data', array( $this, 'storeAdminData' ) );
         add_action( 'admin_enqueue_scripts', array( $this, 'addAdminScripts' ) );
         add_action( 'wp_ajax_nopriv_getInquiryContact', 'getInquiryContact');
         add_action( 'wp_ajax_getInquiryContact', array($this, 'getInquiryContact') );
-        // add_action( 'wp_ajax_nopriv_getPost', 'getPost');
-        // add_action( 'wp_ajax_getPost', array($this, 'getPost') );
-        // add_action( 'wp_ajax_nopriv_storeReaArticleBlock', 'storeReaArticleBlock');
-        // add_action( 'wp_ajax_storeReaArticleBlock', array($this, 'storeReaArticleBlock') );
-        // add_action( 'wp_ajax_nopriv_deleteReaArticleBlock', 'deleteReaArticleBlock');
-        // add_action( 'wp_ajax_deleteReaArticleBlock', array($this, 'deleteReaArticleBlock') );
-        // add_action( 'wp_ajax_nopriv_sortReaArticleBlock', 'sortReaArticleBlock');
-        // add_action( 'wp_ajax_sortReaArticleBlock', array($this, 'sortReaArticleBlock') );
     }
     
     /**
@@ -98,88 +89,6 @@ class CustomerInquiry
                 "data" => $get_post
             )
         );
-        die;
-    }
-
-    function getPost() {
-        global $wpdb;
-        $keyword = $_GET['search'];
-        $meta_key = 'rea_article_block';
-        $exist_posts = $wpdb->get_results( "SELECT post_id FROM {$wpdb->prefix}postmeta WHERE meta_key='{$meta_key}'");
-        $data_post=[];
-        foreach($exist_posts as $kPostMeta=>$vPostMeta) {
-            $data_post[] = $vPostMeta->post_id;
-        }
-        $implode_post = implode(',', $data_post);
-        $exclude_query = $implode_post ? ' AND ID NOT IN (' . $implode_post . ') ' : '';
-        $query = $wpdb->get_results( "SELECT ID,post_title FROM {$wpdb->prefix}posts WHERE post_title LIKE '%{$keyword}%' AND post_status='publish' AND post_type='post' {$exclude_query} LIMIT 0, 20");
-        $result = [];
-        foreach ($query as $k=>$v) {
-            $result[] = [
-            'id' => $v->ID,
-            'text' => $v->post_title
-            ];
-        }
-        echo json_encode($result);
-        die;
-    }
-
-    function storeReaArticleBlock() {
-        global $wpdb;
-
-        $post = $_POST['post_select'];
-        $meta_key = 'rea_article_block';
-
-        if ($post) {
-            $last_position = $wpdb->get_row("SELECT MAX(meta_value) as last_position FROM {$wpdb->prefix}postmeta WHERE meta_key='{$meta_key}'");
-            $insert = $wpdb->insert($wpdb->prefix.'postmeta', 
-                array(
-                    'post_id' => $post,
-                    'meta_key'  => $meta_key,
-                    'meta_value' => $last_position->last_position + 1
-                )
-            );
-            echo json_encode(['status'=>'success']);
-        }
-        die;
-    }
-
-    function deleteReaArticleBlock() {
-        global $wpdb;
-
-        $post = $_POST['id'];
-        $meta_key = 'rea_article_block';
-        $delete = $wpdb->delete( $wpdb->prefix . 'postmeta', array( 'post_id' => $post, 'meta_key' => $meta_key ) );
-        if ($delete) {
-            echo json_encode(['status' => 'success']);
-        } else {
-            echo json_encode(['status' => 'error']);
-        }
-        die;
-    }
-
-    function sortReaArticleBlock() {
-        global $wpdb;
-
-        $order = $_POST['order'];
-        $temp_data = str_replace("\\", "",$order);
-        $post_order = json_decode($temp_data, true);
-        $meta_key = 'rea_article_block';
-        foreach($post_order as $k=>$v) {
-            $old_data = $v['oldData'];
-            $new_position = $v['newPosition'];
-            $post = $wpdb->get_row("SELECT post_id FROM {$wpdb->prefix}postmeta WHERE post_id={$old_data}");
-            $update = $wpdb->update($wpdb->prefix.'postmeta', 
-                array(
-                    'meta_value' => $new_position
-                ),
-                array(
-                    'post_id' => $post->post_id,
-                    'meta_key' => $meta_key
-                )
-            );
-        }
-        echo json_encode(['status' => 'success']);
         die;
     }
 }
